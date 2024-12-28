@@ -11,7 +11,7 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
-import android.media.ExifInterface
+import androidx. exifinterface. media. ExifInterface
 import android.os.Build
 import android.os.Environment
 import android.os.Handler
@@ -21,8 +21,6 @@ import android.util.Log
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
-import com.mailjet.client.MailjetRequest
-import com.mailjet.client.resource.Emailv31
 import com.wearessc.theift_alrm.dont_touch_phone.anti_theift_2022.R
 import com.wearessc.theift_alrm.dont_touch_phone.anti_theift_2022.intruderdetection.IntruderHiddenCamera.CameraConfig
 import com.wearessc.theift_alrm.dont_touch_phone.anti_theift_2022.intruderdetection.IntruderHiddenCamera.CameraError
@@ -37,14 +35,20 @@ import com.wearessc.theift_alrm.dont_touch_phone.anti_theift_2022.intruderdetect
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import org.json.JSONArray
-import org.json.JSONObject
-import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
 import java.util.Locale
+import java.util.Properties
 import java.util.Random
-
+import javax.mail.Authenticator
+import javax.mail.Message
+import javax.mail.PasswordAuthentication
+import javax.mail.Session
+import javax.mail.Transport
+import javax.mail.internet.InternetAddress
+import javax.mail.internet.MimeBodyPart
+import javax.mail.internet.MimeMessage
+import javax.mail.internet.MimeMultipart
 
 class MagicServiceClass : HiddenCameraService() {
     private var isEmail = false
@@ -127,74 +131,6 @@ class MagicServiceClass : HiddenCameraService() {
         startForeground(1, notification)
     }
 
-    // to save in gallery or any front folders of local storage
-    /*override fun onImageCapture(@NonNull imageFile: File) {
-        Log.d("MagicService", "onImageCapture: Taking Picture")
-
-        val path = imageFile.path
-        val options = BitmapFactory.Options().apply {
-            inJustDecodeBounds = true
-        }
-        BitmapFactory.decodeFile(path, options)
-        var decodeFile = BitmapFactory.decodeFile(path, BitmapFactory.Options())
-
-        try {
-            val exifInterface = ExifInterface(path)
-            val orientation = exifInterface.getAttribute(ExifInterface.TAG_ORIENTATION)?.toInt() ?: 1
-            val matrix = Matrix()
-
-            when (orientation) {
-                ExifInterface.ORIENTATION_ROTATE_90 -> {
-                    Log.e("MagicService", "ExifInterface.ORIENTATION_ROTATE_90")
-                    matrix.setRotate(90f)
-                }
-                ExifInterface.ORIENTATION_ROTATE_180 -> {
-                    Log.e("MagicService", "ExifInterface.ORIENTATION_ROTATE_180")
-                    matrix.setRotate(180f)
-                }
-                ExifInterface.ORIENTATION_ROTATE_270 -> {
-                    Log.e("MagicService", "ExifInterface.ORIENTATION_ROTATE_270")
-                    matrix.setRotate(270f)
-                }
-            }
-
-            decodeFile = Bitmap.createBitmap(decodeFile, 0, 0, options.outWidth, options.outHeight, matrix, true)
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-
-        val fileDir = if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
-            Log.d("MagicService", "onImageCapture: Saving Picture in lower versions")
-            getExternalFilesDir(Environment.DIRECTORY_PICTURES) // Use app-specific directory
-        } else {
-            Log.d("MagicService", "onImageCapture: Saving Picture in higher versions")
-            File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "Intruder Feature")
-        }
-
-        if (fileDir != null && (!fileDir.exists() && !fileDir.mkdirs())) {
-            Log.i("MagicService", "Can't create directory to save the image")
-            return
-        }
-
-        val fileName = "Image-" + Random().nextInt(10000) + ".jpg"
-        val imageFileToSave = File(fileDir, fileName)
-
-        Log.i("path", imageFileToSave.absolutePath)
-
-        try {
-            FileOutputStream(imageFileToSave).use { fos ->
-                decodeFile.compress(Bitmap.CompressFormat.JPEG, 90, fos)
-                fos.flush()
-            }
-            Log.d("MagicService", "onImageCapture: Image saved successfully: ${imageFileToSave.absolutePath}")
-        } catch (e: Exception) {
-            e.printStackTrace()
-            Log.d("MagicService", "onImageCapture: Error saving image")
-        }
-
-        stopSelf()
-    }*/
-
     // to save in hidden folders of local storage
     override fun onImageCapture(imageFile: File) {
         Log.d("MagicService", "onImageCapture: Taking Picture")
@@ -261,87 +197,61 @@ class MagicServiceClass : HiddenCameraService() {
 
     private fun sendEmailWithImage(imageFile: File) {
         try {
-            val base64Image = encodeImageToBase64(imageFile)
-            if (base64Image.isEmpty()) {
-                Log.e("MagicService", "Base64 image is empty, skipping email send.")
-                return
-            }
-
             // Log the size of the image file
             Log.d("MagicService", "Image file size: ${imageFile.length()} bytes")
+
+            val props = Properties().apply {
+                put("mail.smtp.host", "smtp.gmail.com") // Use appropriate SMTP host
+                put("mail.smtp.port", "587")
+                put("mail.smtp.auth", "true")
+                put("mail.smtp.starttls.enable", "true")
+            }
+
+            val session = Session.getInstance(props, object : Authenticator() {
+                override fun getPasswordAuthentication(): PasswordAuthentication {
+                    val senderEmail = "zaynii1911491@gmail.com" // Sender email
+                    val senderPassword = "eeyepbpiadbraobu" // Use your app password for Gmail
+                    return PasswordAuthentication(senderEmail, senderPassword)
+                }
+            })
 
             // Get the current timestamp
             val currentTime = System.currentTimeMillis()
             val timestamp = java.text.SimpleDateFormat("yyyy/MM/dd hh:mm a", Locale.getDefault()).format(currentTime)
 
-            val email = JSONArray().put(
-                JSONObject().apply {
-                    put(Emailv31.Message.FROM, JSONObject().apply {
-                        put("Email", "zaynii1911491@gmail.com")
-                        put("Name", "SecureKeep")
-                    })
-                    put(
-                        Emailv31.Message.TO, JSONArray().put(
-                            JSONObject().apply {
-                                put("Email", userEmail)
-                            }
-                        )
-                    )
-                    put(Emailv31.Message.SUBJECT, "Intruder Alert!")
-                    put(Emailv31.Message.TEXTPART, "An intruder was detected at $timestamp.")
-                    put(
-                        Emailv31.Message.ATTACHMENTS, JSONArray().put(
-                            JSONObject().apply {
-                                put("ContentType", "image/png")
-                                put("Filename", imageFile.name)
-                                put("Base64Content", base64Image)
-                            }
-                        )
-                    )
-                }
-            )
+            val message = MimeMessage(session).apply {
+                setFrom(InternetAddress("zaynii1911491@gmail.com")) // Email from
+                setRecipients(Message.RecipientType.TO, InternetAddress.parse(userEmail)) // Email to
+                subject = "Intruder Alert"
 
-            // Build email request
-            val request = MailjetRequest(Emailv31.resource).apply {
-                property(Emailv31.MESSAGES, email)
+                // Create a multipart message
+                val multipart = MimeMultipart()
+
+                // Create the body part for the text
+                val textBodyPart = MimeBodyPart().apply {
+                    setText("An intruder was detected trying to access your device at $timestamp.")
+                }
+
+                // Create the body part for the attachment
+                val attachmentBodyPart = MimeBodyPart().apply {
+                    attachFile(imageFile)
+                }
+
+                // Add both parts to the multipart
+                multipart.addBodyPart(textBodyPart)
+                multipart.addBodyPart(attachmentBodyPart)
+
+                // Set the content of the message to the multipart
+                setContent(multipart)
             }
 
-            // Send email using the MailjetService
-            val response = MailjetService.sendEmail(request)
-            response?.let {
-                Log.d("MagicService", "Email sent response: ${it.data}")
-            } ?: Log.e("MagicService", "Email sending failed: Response is null")
-
+            Transport.send(message)
+            Log.d("MagicService", "Email sent successfully.")
         } catch (e: Exception) {
-            Log.e("MagicService", "Exception occurred while sending email: ${e.localizedMessage}")
+            e.printStackTrace()
+            Log.e("MagicService", "Error sending email: ${e.message}")
         }
     }
-
-
-    private fun encodeImageToBase64(file: File): String {
-        // Decode the image file
-        val bitmap = BitmapFactory.decodeFile(file.absolutePath) ?: run {
-            Log.e("MailjetService", "Failed to decode the image file: ${file.absolutePath}")
-            return ""
-        }
-
-        // Log the dimensions of the bitmap
-        Log.d("MagicService", "Decoded image size: ${bitmap.width}x${bitmap.height} pixels")
-
-        return bitmapToBase64(bitmap)
-    }
-
-    private fun bitmapToBase64(bitmap: Bitmap): String {
-        val byteArrayOutputStream = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 90, byteArrayOutputStream)
-        val byteArray = byteArrayOutputStream.toByteArray()
-
-        // Log base64 length
-        Log.d("MagicService", "Base64 size: ${byteArray.size} bytes")
-
-        return android.util.Base64.encodeToString(byteArray, android.util.Base64.NO_WRAP)
-    }
-
 
     override fun onCameraError(@CameraError.CameraErrorCodes errorCode: Int) {
         when (errorCode) {

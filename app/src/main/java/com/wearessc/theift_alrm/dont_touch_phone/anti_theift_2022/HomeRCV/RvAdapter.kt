@@ -65,7 +65,7 @@ class RvAdapter(val context: Context, private var categoryList: ArrayList<RCVMod
                 "Earphones Detection" -> Intent(context, EarphonesActivity::class.java)
                 else -> Intent(context, TouchPhoneActivity::class.java) // Default case
             }
-            ContextCompat.startActivity(context, intent, null)
+            context.startActivity(intent, null)
         }
 
     }

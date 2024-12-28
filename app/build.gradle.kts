@@ -5,12 +5,12 @@ plugins {
 
 android {
     namespace = "com.wearessc.theift_alrm.dont_touch_phone.anti_theift_2022"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.wearessc.theift_alrm.dont_touch_phone.anti_theift_2022"
         minSdk = 26
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 4
         versionName = "1.3"
 
@@ -64,7 +64,9 @@ dependencies {
     implementation (libs.ssp.android)
     implementation (libs.sdp.android)
 
-    implementation(libs.mailjet.client)
+    // for email feature
+    implementation (libs.android.mail)
+    implementation (libs.android.activation)
     implementation (libs.kotlinx.coroutines.core)
     implementation (libs.kotlinx.coroutines.android)
     implementation(kotlin("script-runtime"))

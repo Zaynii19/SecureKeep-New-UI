@@ -65,21 +65,16 @@ class IntruderActivity : AppCompatActivity() {
         compName = ComponentName(this, MyDeviceAdminReceiver::class.java)
         sharedPreferences = getSharedPreferences("IntruderPrefs", MODE_PRIVATE)
 
-        // Check if the app is already a device admin
-        if (!devicePolicyManager.isAdminActive(compName)) {
-            requestDeviceAdmin()
-        }
-
         isIntruderServiceRunning = MainActivity.isServiceRunning(this@IntruderActivity, com.wearessc.theift_alrm.dont_touch_phone.anti_theift_2022.intruderdetection.IntruderServices.IntruderTrackingService::class.java)
 
         // Retrieving selected attempts and alert status
         alertStatus = sharedPreferences.getBoolean("AlertStatus", false)
         isEmail = sharedPreferences.getBoolean("EmailStatus", false)
         attemptThreshold = sharedPreferences.getInt("AttemptThreshold", 2)
-        binding.selectedAttempts.text = attemptThreshold.toString()
+        binding.selectedAttempts.text = String.format(Locale.getDefault(), "%d", attemptThreshold)
 
         loadSelfiesFromStorage()
-        binding.picsCount.text = currentSelfieCount.toString()
+        binding.picsCount.text = String.format(Locale.getDefault(), "%d", currentSelfieCount)
 
         binding.backBtn.setOnClickListener {
             startActivity(Intent(this@IntruderActivity, MainActivity::class.java))
@@ -103,36 +98,41 @@ class IntruderActivity : AppCompatActivity() {
                 editor.putBoolean("AlertStatus", alertStatus)
                 editor.apply()
             } else {
-                alertStatus = true
-                isIntruderServiceRunning = true
+                // Check if the app is already a device admin
+                if (!devicePolicyManager.isAdminActive(compName)) {
+                    requestDeviceAdmin()
+                } else {
+                    alertStatus = true
+                    isIntruderServiceRunning = true
 
-                object : CountDownTimer(3000, 1000) {
-                    override fun onTick(millisUntilFinished: Long) {
-                        binding.powerBtn.visibility = View.INVISIBLE
-                        binding.activateText.visibility = View.INVISIBLE
-                        binding.activateCount.visibility = View.VISIBLE
-                        binding.activateCount.text = buildString {
-                            append("Will be activated in\n")
-                            append("\t\t\t\t00:")
-                            append(millisUntilFinished / 1000)
+                    object : CountDownTimer(3000, 1000) {
+                        override fun onTick(millisUntilFinished: Long) {
+                            binding.powerBtn.visibility = View.INVISIBLE
+                            binding.activateText.visibility = View.INVISIBLE
+                            binding.activateCount.visibility = View.VISIBLE
+                            binding.activateCount.text = buildString {
+                                append("Will be activated in\n")
+                                append("\t\t\t\t00:")
+                                append(millisUntilFinished / 1000)
+                            }
                         }
-                    }
 
-                    override fun onFinish() {
-                        binding.activateCount.visibility = View.INVISIBLE
-                        binding.powerBtn.visibility = View.VISIBLE
-                        binding.activateText.visibility = View.VISIBLE
-                        Toast.makeText(this@IntruderActivity, "Intruder Alert Mode Activated", Toast.LENGTH_SHORT).show()
-                        binding.powerBtn.setImageResource(R.drawable.power_off)
-                        binding.activateText.text = getString(R.string.tap_to_deactivate)
+                        override fun onFinish() {
+                            binding.activateCount.visibility = View.INVISIBLE
+                            binding.powerBtn.visibility = View.VISIBLE
+                            binding.activateText.visibility = View.VISIBLE
+                            Toast.makeText(this@IntruderActivity, "Intruder Alert Mode Activated", Toast.LENGTH_SHORT).show()
+                            binding.powerBtn.setImageResource(R.drawable.power_off)
+                            binding.activateText.text = getString(R.string.tap_to_deactivate)
 
-                        startBackgroundService()
-                        //Save the alert status in shared preferences
-                        val editor = sharedPreferences.edit()
-                        editor.putBoolean("AlertStatus", alertStatus)
-                        editor.apply()
-                    }
-                }.start()
+                            startBackgroundService()
+                            //Save the alert status in shared preferences
+                            val editor = sharedPreferences.edit()
+                            editor.putBoolean("AlertStatus", alertStatus)
+                            editor.apply()
+                        }
+                    }.start()
+                }
             }
         }
 
@@ -187,7 +187,7 @@ class IntruderActivity : AppCompatActivity() {
         updatePowerButton()
 
         loadSelfiesFromStorage()
-        binding.picsCount.text = currentSelfieCount.toString()
+        binding.picsCount.text = String.format(Locale.getDefault(), "%d", currentSelfieCount)
     }
 
     private fun requestDeviceAdmin() {

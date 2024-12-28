@@ -19,6 +19,7 @@ import androidx.core.app.NotificationCompat
 import com.wearessc.theift_alrm.dont_touch_phone.anti_theift_2022.R
 import com.wearessc.theift_alrm.dont_touch_phone.anti_theift_2022.alarmsetup.AlarmService
 import com.wearessc.theift_alrm.dont_touch_phone.anti_theift_2022.alarmsetup.EnterPinActivity
+import kotlin.math.sqrt
 
 class MotionDetectionService : Service(), SensorEventListener {
 
@@ -74,7 +75,7 @@ class MotionDetectionService : Service(), SensorEventListener {
             val y = values[1]
             val z = values[2]
             mAccelLast = mAccelCurrent
-            mAccelCurrent = Math.sqrt((x * x + y * y + z * z).toDouble()).toFloat()
+            mAccelCurrent = sqrt((x * x + y * y + z * z).toDouble()).toFloat()
             val delta = mAccelCurrent - mAccelLast
             mAccel = mAccel * 0.9f + delta
 
