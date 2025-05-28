@@ -136,7 +136,6 @@ class MainActivity : AppCompatActivity() {
     // Handle the result of permission requests
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-
         if (requestCode == PERMISSION_REQUEST_CODE) {
             val deniedPermissions = permissions.filterIndexed { index, _ -> grantResults[index] != PackageManager.PERMISSION_GRANTED }
             if (deniedPermissions.isNotEmpty()) {
@@ -144,7 +143,7 @@ class MainActivity : AppCompatActivity() {
                 if (permissionRequestCount >= 2) {
                     openAppSettings() // Open settings after the user denies permission twice
                 } else {
-                    Toast.makeText(this, "Notification permission permission is required.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Notification permission is required.", Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -172,40 +171,70 @@ class MainActivity : AppCompatActivity() {
                 missingPermissions.add(Manifest.permission.CAMERA)
             }
 
-            // Check for storage permissions based on Android version
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
-                // Android 9 (Pie) and below
-                val readStoragePermission = ContextCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE)
-                val writeStoragePermission = ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+            // Check for storage permissions based on Android version (highest to lowest)
+            when {
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE -> {
+                    // Android 15+
+                    val hasPartialAccess = ContextCompat.checkSelfPermission(
+                        context,
+                        Manifest.permission.READ_MEDIA_VISUAL_USER_SELECTED
+                    ) == PackageManager.PERMISSION_GRANTED
 
-                if (writeStoragePermission != PackageManager.PERMISSION_GRANTED) {
-                    missingPermissions.add(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    val hasFullAccess = ContextCompat.checkSelfPermission(
+                        context,
+                        Manifest.permission.READ_MEDIA_IMAGES
+                    ) == PackageManager.PERMISSION_GRANTED
+
+                    if (!hasPartialAccess && !hasFullAccess) {
+                        missingPermissions.add(Manifest.permission.READ_MEDIA_VISUAL_USER_SELECTED)
+                        missingPermissions.add(Manifest.permission.READ_MEDIA_IMAGES)
+                    }
                 }
-                if (readStoragePermission != PackageManager.PERMISSION_GRANTED) {
-                    missingPermissions.add(Manifest.permission.READ_EXTERNAL_STORAGE)
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU -> {
+                    // Android 13-14
+                    val readMediaImagesPermission = ContextCompat.checkSelfPermission(
+                        context,
+                        Manifest.permission.READ_MEDIA_IMAGES
+                    )
+                    if (readMediaImagesPermission != PackageManager.PERMISSION_GRANTED) {
+                        missingPermissions.add(Manifest.permission.READ_MEDIA_IMAGES)
+                    }
                 }
-
-            } else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
-                // Android 10 (Q) to Android 12 (S)
-                val readStoragePermission = ContextCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE)
-
-                if (readStoragePermission != PackageManager.PERMISSION_GRANTED) {
-                    missingPermissions.add(Manifest.permission.READ_EXTERNAL_STORAGE)
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q -> {
+                    // Android 10-12
+                    val readStoragePermission = ContextCompat.checkSelfPermission(
+                        context,
+                        Manifest.permission.READ_EXTERNAL_STORAGE
+                    )
+                    if (readStoragePermission != PackageManager.PERMISSION_GRANTED) {
+                        missingPermissions.add(Manifest.permission.READ_EXTERNAL_STORAGE)
+                    }
                 }
-            } else { // Android 13 and above
-                val readMediaImagesPermission = ContextCompat.checkSelfPermission(context, Manifest.permission.READ_MEDIA_IMAGES)
+                else -> {
+                    // Android 9 (Pie) and below
+                    val writeStoragePermission = ContextCompat.checkSelfPermission(
+                        context,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE
+                    )
+                    val readStoragePermission = ContextCompat.checkSelfPermission(
+                        context,
+                        Manifest.permission.READ_EXTERNAL_STORAGE
+                    )
 
-                if (readMediaImagesPermission != PackageManager.PERMISSION_GRANTED) {
-                    missingPermissions.add(Manifest.permission.READ_MEDIA_IMAGES)
+                    if (writeStoragePermission != PackageManager.PERMISSION_GRANTED) {
+                        missingPermissions.add(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    }
+                    if (readStoragePermission != PackageManager.PERMISSION_GRANTED) {
+                        missingPermissions.add(Manifest.permission.READ_EXTERNAL_STORAGE)
+                    }
                 }
             }
 
-            // Return true only if there are no missing permissions and overlay permission is granted
             return missingPermissions.isEmpty() && overlayPermission
         }
         
         fun isServiceRunning(context: Context, serviceClass: Class<*>): Boolean {
-            val activityManager = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+            val activityManager = context.getSystemService(ACTIVITY_SERVICE) as ActivityManager
             for (service in activityManager.getRunningServices(Integer.MAX_VALUE)) {
                 if (serviceClass.name == service.service.className) {
                     return true
