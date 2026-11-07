@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    tools:context=".overchargedetection.OverChargeActivity">
+    tools:context="com.example.securekeepNew.overChargeDetection.OverChargeActivity">
 
     <LinearLayout
         android:id="@+id/linearLayout"

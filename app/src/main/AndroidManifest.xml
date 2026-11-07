@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="com.wearessc.theift_alrm.dont_touch_phone.anti_theift_2022">
+    package="com.example.securekeepNew">
+
     <!-- Permissions -->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.VIBRATE" />
-    <!-- for wifi detection feature -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <!-- for Wi-Fi detection feature -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -23,24 +24,11 @@
     <uses-permission android:name="android.permission.REORDER_TASKS" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <!-- Scoped Storage Permissions -->
-    <uses-permission
-        android:name="android.permission.READ_MEDIA_IMAGES"
-        android:maxSdkVersion="34" />
-    <uses-permission android:name="android.permission.READ_MEDIA_VISUAL_USER_SELECTED" />
-
-    <uses-permission
-        android:name="android.permission.READ_EXTERNAL_STORAGE"
-        android:maxSdkVersion="32" />
-    <uses-permission
-        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
-        android:maxSdkVersion="28" />
     <!-- Foreground Service Permissions for API 34+ -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_CAMERA" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_CONNECTED_DEVICE" />
-    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <!-- Camera Features -->
     <uses-feature android:name="android.hardware.camera.flash"
         android:required="false" />
@@ -49,7 +37,7 @@
         android:required="false" />
 
     <application
-        android:name="com.wearessc.theift_alrm.dont_touch_phone.anti_theift_2022.alarmsetup.ApplicationClass"
+        android:name="com.example.securekeepNew.ApplicationClass"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -60,56 +48,57 @@
         android:theme="@style/Theme.SecureKeep">
 
         <activity
-            android:name="com.wearessc.theift_alrm.dont_touch_phone.anti_theift_2022.settings.EmailActivity"
+            android:name="com.example.securekeepNew.settings.EmailActivity"
             android:exported="false" />
         <activity
-            android:name="com.wearessc.theift_alrm.dont_touch_phone.anti_theift_2022.AboutActivity"
+            android:name="com.example.securekeepNew.AboutActivity"
             android:exported="false" />
         <activity
-            android:name="com.wearessc.theift_alrm.dont_touch_phone.anti_theift_2022.intruderdetection.FullPictureActivity"
+            android:name="com.example.securekeepNew.intruderDetection.FullPictureActivity"
             android:exported="false" />
         <activity
-            android:name="com.wearessc.theift_alrm.dont_touch_phone.anti_theift_2022.intruderdetection.IntruderSelfieActivity"
+            android:name="com.example.securekeepNew.intruderDetection.IntruderSelfieActivity"
             android:exported="false" /> <!-- Activities -->
         <activity
-            android:name="com.wearessc.theift_alrm.dont_touch_phone.anti_theift_2022.settings.PinActivity"
+            android:name="com.example.securekeepNew.settings.PinActivity"
             android:exported="false" />
         <activity
-            android:name="com.wearessc.theift_alrm.dont_touch_phone.anti_theift_2022.settings.CreatePinActivity"
+            android:name="com.example.securekeepNew.settings.CreatePinActivity"
             android:exported="false" />
         <activity
-            android:name="com.wearessc.theift_alrm.dont_touch_phone.anti_theift_2022.settings.SettingActivity"
+            android:name="com.example.securekeepNew.settings.SettingActivity"
             android:exported="false" />
         <activity
-            android:name="com.wearessc.theift_alrm.dont_touch_phone.anti_theift_2022.alarmsetup.EnterPinActivity"
+            android:name="com.example.securekeepNew.alarmSetup.EnterPinActivity"
             android:exported="true" />
         <activity
-            android:name="com.wearessc.theift_alrm.dont_touch_phone.anti_theift_2022.earphonedetection.EarphonesActivity"
+            android:name="com.example.securekeepNew.earphoneDetection.EarphonesActivity"
             android:exported="false" />
         <activity
-            android:name="com.wearessc.theift_alrm.dont_touch_phone.anti_theift_2022.overchargedetection.OverChargeActivity"
+            android:name="com.example.securekeepNew.overChargeDetection.OverChargeActivity"
             android:exported="false" />
         <activity
-            android:name="com.wearessc.theift_alrm.dont_touch_phone.anti_theift_2022.wifidetection.WifiActivity"
+            android:name="com.example.securekeepNew.wifiDetection.WifiActivity"
             android:exported="false" />
         <activity
-            android:name="com.wearessc.theift_alrm.dont_touch_phone.anti_theift_2022.chargingdetect.ChargeDetectActivity"
+            android:name="com.example.securekeepNew.chargingDetect.ChargeDetectActivity"
             android:exported="false" />
         <activity
-            android:name="com.wearessc.theift_alrm.dont_touch_phone.anti_theift_2022.antipocket.AntiPocketActivity"
+            android:name="com.example.securekeepNew.antiPocket.AntiPocketActivity"
             android:exported="false" />
         <activity
-            android:name="com.wearessc.theift_alrm.dont_touch_phone.anti_theift_2022.touchdetection.TouchPhoneActivity"
+            android:name="com.example.securekeepNew.touchDetection.TouchPhoneActivity"
             android:exported="false" />
         <activity
-            android:name="com.wearessc.theift_alrm.dont_touch_phone.anti_theift_2022.intruderdetection.IntruderActivity"
+            android:name="com.example.securekeepNew.intruderDetection.IntruderActivity"
             android:exported="false" />
         <activity
-            android:name="com.wearessc.theift_alrm.dont_touch_phone.anti_theift_2022.intruderdetection.PermissionActivity"
+            android:name="com.example.securekeepNew.intruderDetection.PermissionActivity"
             android:exported="false" />
         <activity
-            android:name="com.wearessc.theift_alrm.dont_touch_phone.anti_theift_2022.SplashScreen"
-            android:exported="true">
+            android:name="com.example.securekeepNew.SplashScreen"
+            android:exported="true"
+            android:theme="@style/Theme.RemoveSplashScreenTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -117,7 +106,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.wearessc.theift_alrm.dont_touch_phone.anti_theift_2022.MainActivity"
+            android:name="com.example.securekeepNew.MainActivity"
             android:exported="true" />
         <provider
             android:name="androidx.core.content.FileProvider"
@@ -130,7 +119,7 @@
         </provider>
         <!-- Receivers -->
         <receiver
-            android:name="com.wearessc.theift_alrm.dont_touch_phone.anti_theift_2022.intruderdetection.IntruderServices.MyDeviceAdminReceiver"
+            android:name="com.example.securekeepNew.intruderDetection.intruderServices.MyDeviceAdminReceiver"
             android:exported="true"
             android:permission="android.permission.BIND_DEVICE_ADMIN">
             <meta-data
@@ -143,42 +132,49 @@
         </receiver>
 
         <service
-            android:name="com.wearessc.theift_alrm.dont_touch_phone.anti_theift_2022.intruderdetection.IntruderServices.IntruderTrackingService"
+            android:name="com.example.securekeepNew.intruderDetection.intruderServices.IntruderTrackingService"
             android:exported="true"
             android:foregroundServiceType="camera"
             android:permission="android.permission.BIND_DEVICE_ADMIN" />
         <service
-            android:name="com.wearessc.theift_alrm.dont_touch_phone.anti_theift_2022.intruderdetection.IntruderServices.MagicServiceClass"
+            android:name="com.example.securekeepNew.intruderDetection.intruderServices.MagicServiceClass"
             android:exported="false"
             android:foregroundServiceType="camera" />
         <service
-            android:name="com.wearessc.theift_alrm.dont_touch_phone.anti_theift_2022.touchdetection.MotionDetectionService"
+            android:name="com.example.securekeepNew.touchDetection.MotionDetectionService"
             android:exported="false"
-            android:foregroundServiceType="specialUse" />
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Anti-theft motion detection to trigger alarm when device is moved" />
+        </service>
         <service
-            android:name="com.wearessc.theift_alrm.dont_touch_phone.anti_theift_2022.antipocket.ProximityDetectionService"
+            android:name="com.example.securekeepNew.antiPocket.ProximityDetectionService"
             android:exported="false"
-            android:foregroundServiceType="specialUse" />
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Anti-pocket removal detection to trigger alarm when device is taken out" />
+        </service>
         <service
-            android:name="com.wearessc.theift_alrm.dont_touch_phone.anti_theift_2022.alarmsetup.AlarmService"
+            android:name="com.example.securekeepNew.alarmSetup.AlarmService"
             android:exported="false"
             android:foregroundServiceType="mediaPlayback" />
         <service
-            android:name="com.wearessc.theift_alrm.dont_touch_phone.anti_theift_2022.wifidetection.WifiDetectionService"
+            android:name="com.example.securekeepNew.wifiDetection.WifiDetectionService"
             android:exported="false"
             android:foregroundServiceType="connectedDevice" />
         <service
-            android:name="com.wearessc.theift_alrm.dont_touch_phone.anti_theift_2022.overchargedetection.BatteryDetectionService"
+            android:name="com.example.securekeepNew.overChargeDetection.BatteryDetectionService"
             android:exported="false"
             android:foregroundServiceType="connectedDevice" />
         <service
-            android:name="com.wearessc.theift_alrm.dont_touch_phone.anti_theift_2022.chargingdetect.ChargingDetectionService"
+            android:name="com.example.securekeepNew.chargingDetect.ChargingDetectionService"
             android:exported="false"
             android:foregroundServiceType="connectedDevice" />
         <service
-            android:name="com.wearessc.theift_alrm.dont_touch_phone.anti_theift_2022.earphonedetection.EarphoneDetectionService"
+            android:name="com.example.securekeepNew.earphoneDetection.EarphoneDetectionService"
             android:exported="false"
             android:foregroundServiceType="mediaPlayback|connectedDevice" />
     </application>
-
 </manifest>

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Don\'t Touch My Phone</string>
+    <string name="app_name">SecureKeep</string>
     <string name="anti_theft_alarm_app">Anti Theft Alarm App</string>
     <string name="anti_theft_alarm">Anti Theft\nAlarm</string>
     <string name="wifi_detection">Wifi Detection</string>
@@ -13,7 +13,6 @@
     <string name="settings">\nsettings</string>
     <string name="securekeep">SecureKeep</string>
     <string name="capture_intruder_s_photo_upon_unathorize_unclock_attempt">Capture Intruder\'s photo upon unauthorized unlock attempt</string>
-    <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>
     <string name="second_fragment_label">Second Fragment</string>
     <string name="next">Next</string>
@@ -77,11 +76,10 @@
     <string name="error_camera_permission_denied">Camera permission denied.</string>
     <string name="let_s_get_start">Let\'s Get Start</string>
     <string name="about">About</string>
-    <string name="unintall">Unintall</string>
     <string name="uninstall">Uninstall</string>
     <string name="how_to_uninstall">How to Uninstall</string>
     <string name="version">Version</string>
-    <string name="_1_0_1">1.0.1</string>
+    <string name="_1_0_0">1.0.0</string>
     <string name="about_securekeep">About SecureKeep</string>
     <string name="email">Email</string>
     <string name="contact">Contact</string>
@@ -94,7 +92,6 @@
     <string name="abc_123_com">abc@123.com</string>
     <string name="current_email_account">Current Email Account</string>
     <string name="add_email_account">Add Email Account</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="enter_email_account">Enter Email Account</string>
     <string name="save">Save</string>

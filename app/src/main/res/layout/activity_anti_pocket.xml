@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    tools:context=".antipocket.AntiPocketActivity">
+    tools:context="com.example.securekeepNew.antiPocket.AntiPocketActivity">
 
     <LinearLayout
         android:id="@+id/linearLayout"

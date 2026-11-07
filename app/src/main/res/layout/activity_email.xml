@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".settings.EmailActivity"
+    tools:context="com.example.securekeepNew.settings.EmailActivity"
     android:background="@color/white">
 
     <LinearLayout
